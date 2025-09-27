@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Mom! 🎂</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            cursor: none;
+        }
+
+        /* Custom cursor */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.8);
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Birthday message */
+        .birthday-message {
+            text-align: center;
+            z-index: 100;
+            margin-bottom: 50px;
+        }
+
+        .main-title {
+            font-size: 4rem;
+            color: #fff;
+            text-shadow: 2px 2px 20px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeInUp 2s ease forwards 0.5s;
+        }
+
+        .sub-title {
+            font-size: 1.5rem;
+            color: #f8f8f8;
+            opacity: 0;
+            animation: fadeInUp 2s ease forwards 1.5s;
+            margin-bottom: 30px;
+        }
+
+        .animated-text {
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+
+        .animated-text:nth-child(2) { animation-delay: 0.1s; }
+        .animated-text:nth-child(3) { animation-delay: 0.2s; }
+        .animated-text:nth-child(4) { animation-delay: 0.3s; }
+        .animated-text:nth-child(5) { animation-delay: 0.4s; }
+        .animated-text:nth-child(6) { animation-delay: 0.5s; }
+
+        /* Floating memories */
+        .floating-memories {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        .memory-photo {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: float 6s ease-in-out infinite;
+            opacity: 0.9;
+            transition: all 0.3s ease;
+        }
+
+        .memory-photo:hover {
+            transform: scale(1.2) !important;
+            opacity: 1;
+            z-index: 200;
+        }
+
+        .memory-photo:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .memory-photo:nth-child(2) {
+            top: 20%;
+            right: 15%;
+            animation-delay: 1s;
+        }
+
+        .memory-photo:nth-child(3) {
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 2s;
+        }
+
+        .memory-photo:nth-child(4) {
+            bottom: 15%;
+            right: 25%;
+            animation-delay: 3s;
+        }
+
+        .memory-photo:nth-child(5) {
+            top: 50%;
+            left: 5%;
+            animation-delay: 4s;
+        }
+
+        .memory-photo:nth-child(6) {
+            top: 60%;
+            right: 10%;
+            animation-delay: 5s;
+        }
+
+        /* Interactive birthday cake */
+        .cake-container {
+            position: relative;
+            margin: 40px 0;
+            cursor: pointer;
+        }
+
+        .cake {
+            font-size: 100px;
+            animation: glow 2s ease-in-out infinite alternate;
+            transition: transform 0.3s ease;
+        }
+
+        .cake:hover {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        /* Hearts floating */
+        .heart {
+            position: fixed;
+            color: #ff69b4;
+            font-size: 20px;
+            pointer-events: none;
+            z-index: 1000;
+            animation: floatUp 3s ease-out forwards;
+        }
+
+        /* Sparkles */
+        .sparkle {
+            position: fixed;
+            color: gold;
+            font-size: 15px;
+            pointer-events: none;
+            z-index: 1000;
+            animation: sparkleAnim 2s ease-out forwards;
+        }
+
+        /* Message box */
+        .message-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            opacity: 0;
+            animation: fadeInUp 2s ease forwards 2.5s;
+        }
+
+        .message-box h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        .message-box p {
+            color: #555;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        /* Interactive button */
+        .celebration-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .celebration-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.6);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 20px #ffeb3b, 0 0 30px #ffeb3b, 0 0 40px #ffeb3b;
+            }
+            to {
+                text-shadow: 0 0 30px #ffeb3b, 0 0 40px #ffeb3b, 0 0 50px #ffeb3b;
+            }
+        }
+
+        @keyframes floatUp {
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes sparkleAnim {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5) rotate(180deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(0) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Background particles */
+        .bg-particle {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: bgFloat 20s infinite linear;
+        }
+
+        @keyframes bgFloat {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-10vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+            .sub-title {
+                font-size: 1.2rem;
+            }
+            .memory-photo {
+                width: 80px;
+                height: 80px;
+            }
+            .cake {
+                font-size: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor"></div>
+    
+    <div class="container">
+        <!-- Background particles -->
+        <div class="bg-particles"></div>
+        
+        <!-- Floating memories (photos) -->
+        <div class="floating-memories">
+            <!-- REPLACE THESE PLACEHOLDER IMAGES WITH YOUR MOM'S PHOTOS -->
+            <!-- Just replace the src="" with your image URLs -->
+            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face" alt="Memory 1" class="memory-photo">
+            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop&crop=face" alt="Memory 2" class="memory-photo">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face" alt="Memory 3" class="memory-photo">
+        </div>
+        
+        <!-- Main birthday message -->
+        <div class="birthday-message">
+            <h1 class="main-title">
+                <span class="animated-text">H</span>
+                <span class="animated-text">a</span>
+                <span class="animated-text">p</span>
+                <span class="animated-text">p</span>
+                <span class="animated-text">y</span>
+                <span class="animated-text"> </span>
+                <span class="animated-text">B</span>
+                <span class="animated-text">i</span>
+                <span class="animated-text">r</span>
+                <span class="animated-text">t</span>
+                <span class="animated-text">h</span>
+                <span class="animated-text">d</span>
+                <span class="animated-text">a</span>
+                <span class="animated-text">y</span>
+                <span class="animated-text">!</span>
+            </h1>
+            <p class="sub-title">To the most wonderful mother in the world ✨</p>
+        </div>
+        
+        <!-- Interactive cake -->
+        <div class="cake-container" onclick="celebrationBurst(event)">
+            <div class="cake">🎂</div>
+        </div>
+        
+        <!-- Message box -->
+        <div class="message-box">
+            <h3>With All My Love 💝</h3>
+            <p>Dear Mom,<br><br>
+            On this special day, I want you to know how grateful I am for everything you've done. Your love, wisdom, and endless support have shaped me into who I am today. You deserve all the happiness in the world!<br><br>
+            May your birthday be filled with joy, laughter, and beautiful memories. Here's to another year of your amazing journey! 🌟
+            </p>
+            <button class="celebration-btn" onclick="createHeartRain()">Send Love 💕</button>
+        </div>
+    </div>
+
+    <script>
+        // Custom cursor
+        const cursor = document.querySelector('.cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // Initial confetti burst
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#fab1a0'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.top = '-10px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animation = `confettiFall ${Math.random() * 3 + 2}s linear forwards`;
+                
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+
+        // Celebration burst function
+        function celebrationBurst(event) {
+            const rect = event.target.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            // Create sparkles
+            for (let i = 0; i < 15; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.innerHTML = '✨';
+                sparkle.style.left = centerX + (Math.random() - 0.5) * 200 + 'px';
+                sparkle.style.top = centerY + (Math.random() - 0.5) * 200 + 'px';
+                
+                document.body.appendChild(sparkle);
+                
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 2000);
+            }
+            
+            createConfetti();
+        }
+
+        // Heart rain function
+        function createHeartRain() {
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.innerHTML = '💖';
+                    heart.style.left = Math.random() * window.innerWidth + 'px';
+                    heart.style.top = window.innerHeight + 'px';
+                    
+                    document.body.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 3000);
+                }, i * 100);
+            }
+        }
+
+        // Background particles
+        function createBgParticles() {
+            const particle = document.createElement('div');
+            particle.className = 'bg-particle';
+            particle.style.left = Math.random() * window.innerWidth + 'px';
+            particle.style.width = particle.style.height = Math.random() * 4 + 2 + 'px';
+            
+            document.querySelector('.bg-particles').appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 20000);
+        }
+
+        // Add confetti animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes confettiFall {
+                to {
+                    transform: translateY(${window.innerHeight + 100}px) rotate(720deg);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Start effects
+        window.addEventListener('load', () => {
+            setTimeout(createConfetti, 1000);
+            setInterval(createBgParticles, 2000);
+        });
+
+        // Mouse interaction effects
+        document.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'BUTTON') {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.innerHTML = '⭐';
+                sparkle.style.left = e.clientX + 'px';
+                sparkle.style.top = e.clientY + 'px';
+                
+                document.body.appendChild(sparkle);
+                
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
